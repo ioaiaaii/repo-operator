@@ -56,8 +56,9 @@ GO_WORKSPACE_CMD := docker run -i --rm\
 
 UBUNTU_CMD := docker run -i --rm\
 		-u $(id -u):$(id -g)\
+		-v $(PWD)/:/opt/:rw\
+		-w "/opt"\
 		ubuntu@${UBUNTU_SHA}
-
 
 ifeq ($(KUBECONFIG),"")
 	HELM_CONTAINER_CMD:=docker run --rm\
@@ -124,3 +125,9 @@ environment:
 	@echo "Go path: "${GOPATH}
 	@echo "Go bin: "${GOBIN}
 	@echo "Go Version: "${GO_VERSION}
+
+
+## Syncs gitignore configuration
+.PHONY: gitignore
+gitignore:
+	@$(UBUNTU_CMD) ./scripts/gitignore_sync.sh

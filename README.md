@@ -18,7 +18,7 @@ repo-operator/
 │
 ├── gitignore/
 │
-├── shell-scripts/
+├── scripts/
 │
 ├── editorconfig/
 │
