@@ -4,6 +4,14 @@
 
 The primary objective of **Repo Operator** is to standardize project setups, enhance code consistency, and reduce redundancy by enabling the seamless integration of configuration logic through Git submodules.
 
+
+### Adding the Git Submodule
+
+To include the Gitignore repository as a submodule, run the following command in your project directory:
+
+```bash
+git submodule add https://github.com/ioaiaaii/repo-operator .
+
 ## Architecture Overview
 
 ### Repository Structure

@@ -1,3 +1,6 @@
+# Define your default OPERATOR_PATH if not set
+OPERATOR_PATH ?= "."
+
 # Repo/Branch/Release
 MODULE := $(shell basename `pwd`)
 COMMIT := $(shell git log --pretty=format:'%h' -n 1)
@@ -130,4 +133,4 @@ environment:
 ## Syncs gitignore configuration
 .PHONY: gitignore
 gitignore:
-	@$(UBUNTU_CMD) ./scripts/gitignore_sync.sh
+	@$(UBUNTU_CMD) bash -c "OPERATOR_PATH=$(OPERATOR_PATH) $(OPERATOR_PATH)/scripts/gitignore_sync.sh"

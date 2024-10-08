@@ -1,13 +1,15 @@
 #!/bin/bash
 
+echo "Using OPERATOR_PATH: ${OPERATOR_PATH}"
+
 # Check if .gitignore exists
 if [ ! -f ".gitignore" ]; then
     touch .gitignore
     echo ".gitignore created."
 fi
 
-# Loop through all .gitignore files in the external gitignore directory
-gifiles=($(ls gitignore/*.gitignore))
+# Loop through all .gitignore files in the specified directory
+gifiles=("$OPERATOR_PATH"/gitignore/*.gitignore)
 
 for file in "${gifiles[@]}"; do
     # Check if the file exists and is a regular file
