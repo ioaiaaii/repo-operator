@@ -20,32 +20,32 @@ GO_WORKSPACE_CMD := docker run -i --rm\
 		golang@${GO_WORKSPACE_SHA}
 
 ## Update depts
-mod-update:
+go-mod-update:
 	@cd ${SRC} && ${GOBIN} get -u ./... && go vet ./...
 
 ## Runs go mod {tidy,vendor,verify}
-mod-sync: 	
+go-mod-sync: 	
 	@cd ${SRC} && ${GOBIN} mod tidy && go mod vendor && go mod verify && echo "at: `pwd`"
 
 ## Runs linter
-lint:
+go-lint:
 	@echo "Linting...\n"
 	@$(GOCI_CMD) golangci-lint run
 
 ## Runs tests
-test:
+go-test:
 	@echo "Unit Testing...\n"
 	@$(GO_WORKSPACE_CMD) go test ./...
 
 ## Builds linux bin for amd64 arch
-build-linux: 
+go-build-linux: 
 	cd ${SRC} && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -mod=readonly ${GOBUILD_OPTS} -o ../${BUILD_PATH}/${MODULE} ${CMD_PATH}
 
 ## Builds darwin bin for amd64 arch
-build-darwin:
+go-build-darwin:
 	cd ${SRC} && CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -a -mod=readonly ${GOBUILD_OPTS} -o ../${BUILD_PATH}/${MODULE}-darwin ${CMD_PATH}
 
 ## Builds all bins
-build-all: build-linux build-darwin
+go-build-all: build-linux build-darwin
 	sha256sum ${BUILD_PATH}/${MODULE} > ${BUILD_PATH}/${MODULE}.sha256
 	sha256sum ${BUILD_PATH}/${MODULE}-darwin> ${BUILD_PATH}/${MODULE}-darwin.sha256
