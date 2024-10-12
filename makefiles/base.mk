@@ -69,6 +69,7 @@ else
 			alpine/helm@${HELM_SHA}
 endif
 
+# sourced :https://gist.github.com/prwhite/8168133?permalink_comment_id=2749866#gistcomment-2749866
 HELP_CMD:=awk '{\
 					if ($$0 ~ /^.PHONY: [a-zA-Z\-\_0-9]+$$/) {\
 						command = substr($$0, index($$0, ":") + 2);\
