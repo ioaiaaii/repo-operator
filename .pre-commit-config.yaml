@@ -1,36 +1,4 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-  hooks:
-  - id: check-added-large-files
-  - id: check-merge-conflict
-  - id: check-vcs-permalinks
-  - id: forbid-new-submodules
-  - id: no-commit-to-branch
-  - id: check-merge-conflict
-  - id: check-executables-have-shebangs
-  - id: check-case-conflict
-  - id: mixed-line-ending
-    args:
-    - --fix=lf
-  - id: detect-private-key
-  - id: end-of-file-fixer
-- repo: https://github.com/norwoodj/helm-docs
-  rev: v1.11.3
-  hooks:
-  - id: helm-docs
-    args:
-    - --chart-search-root=meta-charts
-- repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.23
-  hooks:
-  - id: terraform-fmt
-  - id: terraform-validate
-  - id: tflint
-  - id: shellcheck
-  - id: terragrunt-hclfmt
-  - id: check-terratest-skip-env
-  - id: markdown-link-check
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -47,6 +15,7 @@ repos:
       - id: end-of-file-fixer
   - repo: https://github.com/norwoodj/helm-docs
     rev: v1.11.3
+    hooks:
       - id: helm-docs
         args:
           - --chart-search-root=meta-charts
@@ -58,6 +27,7 @@ repos:
         require_serial: true
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: v0.1.23 # Get the latest from: https://github.com/gruntwork-io/pre-commit/releases
+    hooks:
       - id: terraform-fmt
       - id: terraform-validate
       - id: tflint
