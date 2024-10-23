@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: v1.11.3
+    hooks:
+      - id: helm-docs
+        args:
+          - --chart-search-root=meta-charts
+        files: ^meta-charts/**/(README\.md\.gotmpl|(Chart|requirements|values)\.yaml)$
+        description: Uses auto built 'helm-docs' to create documentation from the Helm chart's 'values.yaml' file, and inserts the result into a corresponding 'README.md' file.
+        entry: helm-docs
+        language: golang
+        name: Helm Docs Built
+        require_serial: true
