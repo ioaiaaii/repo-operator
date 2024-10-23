@@ -15,6 +15,15 @@ docker-image: $(DOCKER_IMAGE)
 	@echo "Bulding ${DOCKER_IMAGE} image with tag: ${DOCKER_TAG}..."
 	@DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG}  --build-arg LD_FLAGS=$(LD_FLAGS) -f ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile ${SRC}
 
+## Tags and Pushes image to a Registry. Currently to DockerHub
+.PHONY: docker-push
+docker-push: $(DOCKER_IMAGE)
+	@echo "Warning!! You must authenticate with Dockerhub, and have repo access"
+	@echo "Tagging ${DOCKER_IMAGE}:${DOCKER_TAG} to ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}"
+	@docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}
+	@echo "Pushing ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}"
+	@docker push ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}
+
 ## Detects the default exposed port from container's image, and run the container with the exposed port
 docker-run: $(DOCKER_IMAGE) $(DOCKER_ARGS)
 	{ 	\

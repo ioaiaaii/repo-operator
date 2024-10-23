@@ -23,9 +23,6 @@ ifeq ($(VERSION),"")
 endif
 
 
-# DOCKER_TAG from version var, but DNS compliant
-DOCKER_TAG :=$(shell echo $(VERSION) | $(UBUNTU_CMD) awk '{gsub("[^.0-9a-zA-Z]","-");print $$0}' )
-DOCKER_IMAGE_REPO ?= ""
 KUBECONFIG ?= ""
 
 # Build
@@ -115,13 +112,21 @@ environment:
 	@echo "Tag: "${TAG}
 	@echo "Branch: "${BRANCH} 
 	@echo "Version: "${VERSION}
-	@echo "Image Tag: "${DOCKER_TAG}
 	@echo "Go path: "${GOPATH}
 	@echo "Go bin: "${GOBIN}
 	@echo "Go Version: "${GO_VERSION}
-
 
 ## Syncs gitignore configuration
 .PHONY: gitignore
 gitignore:
 	@$(UBUNTU_CMD) bash -c "OPERATOR_PATH=$(OPERATOR_PATH) $(OPERATOR_PATH)/scripts/gitignore_sync.sh"
+
+## Syncs pre-commit-hooks configuration
+.PHONY: pre-commit-hooks-list
+pre-commit-hooks-list:
+	@$(UBUNTU_CMD) bash -c "OPERATOR_PATH=$(OPERATOR_PATH) ls $(OPERATOR_PATH)/pre-commit-hooks/"
+
+## Syncs pre-commit-hooks configuration
+.PHONY: pre-commit-hooks
+pre-commit-hooks:
+	@$(UBUNTU_CMD) bash -c "OPERATOR_PATH=$(OPERATOR_PATH) $(OPERATOR_PATH)/scripts/precommit_sync.sh"
