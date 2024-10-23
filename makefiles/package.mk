@@ -5,19 +5,19 @@ DOCKER_IMAGE ?= ""
 
 ## Runs hadolint on Dockerfile
 .PHONY: docker-lint
-docker-lint $(DOCKER_IMAGE): 
+docker-lint:
 	@echo "Dockerfile linting..."
 	@docker run --rm -i hadolint/hadolint < ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile
 
 ## Builds image. Call it with VERSION arg to parse Image tag. 
 ## e.g. `make docker-image VERSION=feat/packaging_dockerfile`
-docker-image: $(DOCKER_IMAGE)
+docker-image:
 	@echo "Bulding ${DOCKER_IMAGE} image with tag: ${DOCKER_TAG}..."
 	@DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG}  --build-arg LD_FLAGS=$(LD_FLAGS) -f ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile ${SRC}
 
 ## Tags and Pushes image to a Registry. Currently to DockerHub
 .PHONY: docker-push
-docker-push: $(DOCKER_IMAGE)
+docker-push:
 	@echo "Warning!! You must authenticate with Dockerhub, and have repo access"
 	@echo "Tagging ${DOCKER_IMAGE}:${DOCKER_TAG} to ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}"
 	@docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}
@@ -25,9 +25,14 @@ docker-push: $(DOCKER_IMAGE)
 	@docker push ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG}
 
 ## Detects the default exposed port from container's image, and run the container with the exposed port
-docker-run: $(DOCKER_IMAGE) $(DOCKER_ARGS)
-	{ 	\
-		port=$$(docker inspect --format='{{range $$key, $$value := .Config.ExposedPorts }}{{$$key}}{{end}}' ${DOCKER_IMAGE}:${VERSION} | sed 's/\/.*//') ;\
-		docker network create ${MODULE};\
-		docker run --name $(DOCKER_IMAGE) --network ${MODULE} -p $${port}:$${port} $(DOCKER_IMAGE):$(VERSION) ;\
+docker-run:
+	{ \
+		port=$$(docker inspect --format='{{range $$key, $$value := .Config.ExposedPorts }}{{$$key}}{{end}}' ${DOCKER_IMAGE}:${DOCKER_TAG} | sed 's/\/.*//') ;\
+		if [ -z "$$(docker network ls --filter name=^${MODULE}$$ --format '{{.Name}}')" ]; then \
+			docker network create ${MODULE}; \
+		fi ;\
+		if [ "$$(docker ps -a --filter name=^${DOCKER_IMAGE}$$ --format '{{.Names}}')" = "${DOCKER_IMAGE}" ]; then \
+			docker stop ${DOCKER_IMAGE} && docker rm ${DOCKER_IMAGE}; \
+		fi ;\
+		docker run -d --name $(DOCKER_IMAGE) --network ${MODULE} -p $${port}:$${port} $(DOCKER_IMAGE):$(DOCKER_TAG); \
 	}
