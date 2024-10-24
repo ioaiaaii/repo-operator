@@ -11,6 +11,13 @@ CMD_PATH := cmd/${MODULE}/*.go
 BUILD_PATH := build
 DEPLOY_PATH := deploy
 
+# git for-each-ref: Retrieves the latest tag that points to HEAD, ensuring it catches the right tag if on a detached state.
+# git rev-parse --abbrev-ref HEAD: Detects the current branch. If it shows HEAD, the Makefile handles this by attempting to derive the branch name.
+# git name-rev --name-only HEAD: Helps in identifying the branch name if checked out in a detached HEAD state.
+
+ifeq ($(BRANCH), HEAD)
+    BRANCH := $(shell git name-rev --name-only HEAD)
+endif
 
 # Get latest merged tag in master, to allow release. Else, get the branch name as version and skip tags in there
 VERSION ?= ""
