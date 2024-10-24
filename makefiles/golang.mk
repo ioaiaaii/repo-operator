@@ -9,11 +9,13 @@ GOLANG_CI_SHA := sha256:e47065d755ca0afeac9df866d1dabdc99f439653a43fe234e05f50d9
 GO_WORKSPACE_SHA := sha256:ad5c126b5cf501a8caef751a243bb717ec204ab1aa56dc41dc11be089fafcb4f
 
 GOCI_CMD := docker run --rm \
+		-u $(shell id -u):$(shell id -g)\
 		-v $(PWD)/${SRC}:/opt/${SRC} \
 		-w /opt/${SRC} \
 		golangci/golangci-lint@${GOLANG_CI_SHA}
 
 GO_WORKSPACE_CMD := docker run -i --rm \
+		-u $(shell id -u):$(shell id -g)\
 		-v $(PWD)/$(SRC):/go/$(MODULE)/$(SRC):ro \
 		-w "/go/$(MODULE)/$(SRC)" \
 		-e CGO_ENABLED=0 \

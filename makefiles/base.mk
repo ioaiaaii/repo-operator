@@ -45,7 +45,7 @@ UBUNTU_SHA := sha256:f0a63f53b736b9211a5313a7219f6cc012b7cf4194c7ce2248fac8162b5
 
 
 CT_CONTAINER_CMD := docker run -it --network host\
-		-u $(id -u):$(id -g)\
+		-u $(shell id -u):$(shell id -g)\
 		-v $(PWD)/${BUILD_PATH}/:/opt/${BUILD_PATH}\
 		-v $(PWD)/${DEPLOY_PATH}/:/opt/${DEPLOY_PATH}\
 		-v $(PWD)/.git/:/opt/.git:ro\
@@ -53,21 +53,21 @@ CT_CONTAINER_CMD := docker run -it --network host\
 		quay.io/helmpack/chart-testing@${CHART_TESTING_SHA}
 
 UBUNTU_CMD := docker run -i --rm\
-		-u $(id -u):$(id -g)\
+		-u $(shell id -u):$(shell id -g)\
 		-v $(PWD)/:/opt/:rw\
 		-w "/opt"\
 		ubuntu@${UBUNTU_SHA}
 
 ifeq ($(KUBECONFIG),"")
 	HELM_CONTAINER_CMD:=docker run --rm\
-			-u $(id -u):$(id -g)\
+			-u $(shell id -u):$(shell id -g)\
 			-v $(PWD)/${DEPLOY_PATH}/:/opt/${DEPLOY_PATH}:ro\
 			-v ~/.kube:/root/.kube:ro\
 			-w "/opt/${DEPLOY_PATH}"\
 			alpine/helm@${HELM_SHA}
 else
 	HELM_CONTAINER_CMD:=docker run --rm\
-			-u $(id -u):$(id -g)\
+			-u $(shell id -u):$(shell id -g)\
 			-v $(PWD)/${DEPLOY_PATH}/:/opt/${DEPLOY_PATH}:ro\
 			-v $(PWD)/${KUBECONFIG}:/root/.kube:ro\
 			-w "/opt/${DEPLOY_PATH}"\
