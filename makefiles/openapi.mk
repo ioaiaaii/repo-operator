@@ -6,7 +6,7 @@ OPENAPI_DOCS_PATH ?= ""
 
 OPENAPI_GENERATOR_CMD := docker run --rm \
     -v ${PWD}:/local \
-	-u $(id -u):$(id -g)\
+	-u $(shell id -u):$(shell id -g) \
 	${OPENAPI_GENERATOR_REPO}@${OPENAPI_GENERATOR_SHA} generate \
     -i /local/${OPENAPI_FILE} \
     -g markdown \
