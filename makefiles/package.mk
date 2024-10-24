@@ -41,13 +41,20 @@ docker-run:
 ## 	run it with DOCKER_IMAGE_REPO="<registry url>"  DOCKER_IMAGE=<image>
 .PHONY: kaniko-docker-image
 kaniko-docker-image:
-	@echo "Building ${DOCKER_IMAGE} image with tag: ${DOCKER_TAG} using Kaniko..."
-	@docker run --rm -v $(PWD):/workspace \
-    	-v "$$HOME"/.config/gcloud:/root/.config/gcloud \
-		gcr.io/kaniko-project/executor:latest \
-		--context=/workspace \
-		--dockerfile=${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile \
-		--destination=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG} \
-		--cache=true \
-		--cache-repo=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}-kaniko-cache \
-		--cache-dir=/workspace/.kaniko-cache
+	@{ \
+		if [ -n "$$GOOGLE_APPLICATION_CREDENTIALS" ]; then \
+			CREDENTIALS_MOUNT="-v $$GOOGLE_APPLICATION_CREDENTIALS:/kaniko/.secret:ro"; \
+		else \
+			CREDENTIALS_MOUNT="-v $$HOME/.config/gcloud:/root/.config/gcloud:ro"; \
+		fi; \
+		echo "Building ${DOCKER_IMAGE} image with tag: ${DOCKER_TAG} using Kaniko... $$CREDENTIALS_MOUNT" ;\
+		docker run --rm -v $(PWD):/workspace \
+			$$CREDENTIALS_MOUNT \
+			gcr.io/kaniko-project/executor:latest \
+			--context=/workspace \
+			--dockerfile=${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile \
+			--destination=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG} \
+			--cache=true \
+			--cache-repo=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}-kaniko-cache \
+			--cache-dir=/workspace/.kaniko-cache; \
+	}
