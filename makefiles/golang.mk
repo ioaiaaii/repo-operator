@@ -14,7 +14,6 @@ GOCI_CMD := docker run --rm \
 		golangci/golangci-lint@${GOLANG_CI_SHA}
 
 GO_WORKSPACE_CMD := docker run -i --rm \
-		-u $(shell id -u):$(shell id -g) \
 		-v $(PWD)/$(SRC):/go/$(MODULE)/$(SRC):ro \
 		-w "/go/$(MODULE)/$(SRC)" \
 		-e CGO_ENABLED=0 \
