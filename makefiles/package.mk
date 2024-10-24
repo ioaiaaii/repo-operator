@@ -38,12 +38,13 @@ docker-run:
 	}
 
 ## Build Docker image with Kaniko and cache repo
-## 	run it with DOCKER_IMAGE_REPO="<registry url>"  DOCKER_IMAGE=<image>
+## 	run it with DOCKER_IMAGE_REPO="<registry url>" DOCKER_IMAGE=<image>
+##  it auto detects if running in GH with Identity Pool Service Account
 .PHONY: kaniko-docker-image
 kaniko-docker-image:
 	@{ \
 		if [ -n "$$GOOGLE_APPLICATION_CREDENTIALS" ]; then \
-			CREDENTIALS_MOUNT="-v $$GOOGLE_APPLICATION_CREDENTIALS:/kaniko/.secret:ro"; \
+			CREDENTIALS_MOUNT="-e GOOGLE_APPLICATION_CREDENTIALS=/kaniko/config.json -v $$GOOGLE_APPLICATION_CREDENTIALS:/kaniko/config.json:ro"; \
 		else \
 			CREDENTIALS_MOUNT="-v $$HOME/.config/gcloud:/root/.config/gcloud:ro"; \
 		fi; \
