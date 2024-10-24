@@ -37,15 +37,17 @@ docker-run:
 		docker run -d --name $(DOCKER_IMAGE) --network ${MODULE} -p $${port}:$${port} $(DOCKER_IMAGE):$(DOCKER_TAG); \
 	}
 
-# Build Docker image with Kaniko locally
+## Build Docker image with Kaniko and cache repo
+## 	run it with DOCKER_IMAGE_REPO="<registry url>"  DOCKER_IMAGE=<image>
 .PHONY: kaniko-docker-image
 kaniko-docker-image:
 	@echo "Building ${DOCKER_IMAGE} image with tag: ${DOCKER_TAG} using Kaniko..."
 	@docker run --rm -v $(PWD):/workspace \
-		-v $(HOME)/.docker/config.json:/kaniko/.docker/config.json:ro \
+    	-v "$$HOME"/.config/gcloud:/root/.config/gcloud \
 		gcr.io/kaniko-project/executor:latest \
 		--context=/workspace \
 		--dockerfile=${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile \
 		--destination=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG} \
 		--cache=true \
-		--cache-repo=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:cache
+		--cache-repo=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}-kaniko-cache \
+		--cache-dir=/workspace/.kaniko-cache
