@@ -5,19 +5,21 @@ OPERATOR_PATH ?= "."
 MODULE := $(shell basename `pwd`)
 COMMIT := $(shell git log --pretty=format:'%h' -n 1)
 TAG := $(shell git for-each-ref --count=1 --format='%(refname:short)' 'refs/tags/v[0-9]*.[0-9]*.[0-9]*' --points-at master --merged)
-BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+
+# Dynamically determine the branch name:
+# - Use GITHUB_HEAD_REF if it is set (indicating a PR).
+# - Use GITHUB_REF if it is set (indicating a regular branch push).
+# - Default to the local git branch if running outside of CI/CD.
+ifneq ($(GITHUB_HEAD_REF),)
+  BRANCH := $(GITHUB_HEAD_REF)
+else
+  BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+endif
+
 SRC ?= "."
 CMD_PATH := cmd/${MODULE}/*.go
 BUILD_PATH := build
 DEPLOY_PATH := deploy
-
-# git for-each-ref: Retrieves the latest tag that points to HEAD, ensuring it catches the right tag if on a detached state.
-# git rev-parse --abbrev-ref HEAD: Detects the current branch. If it shows HEAD, the Makefile handles this by attempting to derive the branch name.
-# git name-rev --name-only HEAD: Helps in identifying the branch name if checked out in a detached HEAD state.
-
-ifeq ($(BRANCH), HEAD)
-    BRANCH := $(shell git name-rev --name-only HEAD)
-endif
 
 # Get latest merged tag in master, to allow release. Else, get the branch name as version and skip tags in there
 VERSION ?= ""
