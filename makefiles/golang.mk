@@ -32,7 +32,7 @@ go-mod-sync:
 ## Runs linter
 go-lint:
 	@echo "Linting..."
-	@$(GOCI_CMD) golangci-lint run --config ci/.golangci.yml -v
+	@$(GOCI_CMD) golangci-lint run --config ${BUILD_PATH}/ci/.golangci.yml -v
 
 ## Runs tests
 go-test:
