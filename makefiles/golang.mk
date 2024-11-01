@@ -9,9 +9,10 @@ GOLANG_CI_SHA := sha256:e47065d755ca0afeac9df866d1dabdc99f439653a43fe234e05f50d9
 GO_WORKSPACE_SHA := sha256:ad5c126b5cf501a8caef751a243bb717ec204ab1aa56dc41dc11be089fafcb4f
 
 GOCI_CMD := docker run --rm \
-		-u $(shell id -u):$(shell id -g)\
-		-v $(PWD)/${SRC}:/opt/${SRC} \
-		-w /opt/${SRC} \
+		-v $(PWD)/${SRC}:/app \
+		-v $(PWD)/${BUILD_PATH}/ci/.cache/golangci-lint/v1.61.0:/root/.cache\
+		-w /app \
+		-e GOLANGCI_LINT_CACHE=$(PWD)/${BUILD_PATH}/ci/.cache \
 		golangci/golangci-lint@${GOLANG_CI_SHA}
 
 GO_WORKSPACE_CMD := docker run -i --rm \
@@ -32,7 +33,7 @@ go-mod-sync:
 ## Runs linter
 go-lint:
 	@echo "Linting..."
-	@$(GOCI_CMD) golangci-lint run --config ${BUILD_PATH}/ci/.golangci.yml -v
+	@$(GOCI_CMD) golangci-lint run --config ${BUILD_PATH}/ci/.golangci.yml --out-format=tab -v ./...
 
 ## Runs tests
 go-test:
