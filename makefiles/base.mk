@@ -16,6 +16,11 @@ else
   BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 endif
 
+# when tag 
+ifeq ($(GITHUB_REF_TYPE), tag)
+  TAG := $(GITHUB_REF_NAME)
+endif
+
 SRC ?= "."
 CMD_PATH := cmd/${MODULE}/*.go
 BUILD_PATH := build
