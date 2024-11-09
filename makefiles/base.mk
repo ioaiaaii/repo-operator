@@ -23,12 +23,13 @@ DEPLOY_PATH := deploy
 
 # Get latest merged tag in master, to allow release. Else, get the branch name as version and skip tags in there
 VERSION ?= ""
+
 ifeq ($(VERSION),"")
-	ifeq ($(TAG),)
-		VERSION    			= $(BRANCH)
-	else
-		VERSION				= $(TAG)
-	endif
+	ifeq ($(BRANCH), HEAD)    # If in detached HEAD, fallback to commit SHA
+        VERSION = $(TAG)           # Use the tag as the version
+    else                           # Otherwise, use the branch name
+        VERSION = $(BRANCH)
+    endif
 endif
 
 
