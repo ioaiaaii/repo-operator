@@ -13,7 +13,7 @@ docker-lint:
 ## e.g. `make docker-image VERSION=feat/packaging_dockerfile`
 docker-image:
 	@echo "Bulding ${DOCKER_IMAGE} image with tag: ${DOCKER_TAG}..."
-	@DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG}  --build-arg LD_FLAGS=$(LD_FLAGS) -f ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile ${SRC}
+	@DOCKER_BUILDKIT=1 docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} --build-arg LD_FLAGS="${LD_FLAGS} -f ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile ${SRC}
 
 ## Tags and Pushes image to a Registry. Currently to DockerHub
 .PHONY: docker-push
@@ -58,4 +58,5 @@ kaniko-docker-image:
 			--cache=true \
 			--cache-repo=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}-kaniko-cache \
 			--cache-dir=/workspace/.kaniko-cache; \
+			--build-arg LD_FLAGS="${LD_FLAGS}; \
 	}
