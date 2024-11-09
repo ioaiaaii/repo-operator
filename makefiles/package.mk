@@ -58,5 +58,5 @@ kaniko-docker-image:
 			--cache=true \
 			--cache-repo=${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}-kaniko-cache \
 			--cache-dir=/workspace/.kaniko-cache; \
-			--build-arg LD_FLAGS="${LD_FLAGS}; \
+			--build-arg LD_FLAGS=${LD_FLAGS}; \
 	}
