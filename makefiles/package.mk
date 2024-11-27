@@ -63,10 +63,10 @@ kaniko-docker-image:
 	}
 
 ## Inspect image with dive
-## 	run it with DOCKER_IMAGE_REPO="<registry url>" DOCKER_IMAGE=<image>
+## 	run it with DOCKER_IMAGE_REPO="<registry url>/" DOCKER_IMAGE=<image>
 .PHONY: dive-ci
 dive-ci:
 	@docker run --rm\
 		-v /var/run/docker.sock:/var/run/docker.sock  \
 		-v $(PWD)/$(DIVE_CI_CONF):/opt/.dive-ci.yaml \
-		wagoodman/dive:latest ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG} --ci --ci-config /opt/.dive-ci.yaml
+		wagoodman/dive:latest ${DOCKER_IMAGE_REPO}${DOCKER_IMAGE}:${DOCKER_TAG} --ci --ci-config /opt/.dive-ci.yaml
