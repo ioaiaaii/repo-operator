@@ -2,12 +2,13 @@
 DOCKER_TAG :=$(shell echo $(VERSION) | $(UBUNTU_CMD) awk '{gsub("[^.0-9a-zA-Z]","-");print $$0}' )
 DOCKER_IMAGE_REPO ?= ""
 DOCKER_IMAGE ?= ""
+DIVE_CI_CONF := "build/ci/.dive-ci.yaml"
 
 ## Runs hadolint on Dockerfile
-.PHONY: docker-lint
-docker-lint:
+.PHONY: image-lint
+image-lint:
 	@echo "Dockerfile linting..."
-	@docker run --rm -i hadolint/hadolint < ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile
+	@docker run --rm -i -e HADOLINT_VERBOSE=1 -e HADOLINT_FORMAT=json hadolint/hadolint < ${BUILD_PATH}/package/${DOCKER_IMAGE}/Dockerfile
 
 ## Builds image. Call it with VERSION arg to parse Image tag. 
 ## e.g. `make docker-image VERSION=feat/packaging_dockerfile`
@@ -60,3 +61,12 @@ kaniko-docker-image:
 			--cache-dir=/workspace/.kaniko-cache \
 			--build-arg LD_FLAGS=${LD_FLAGS}; \
 	}
+
+## Inspect image with dive
+## 	run it with DOCKER_IMAGE_REPO="<registry url>" DOCKER_IMAGE=<image>
+.PHONY: dive-ci
+dive-ci:
+	@docker run --rm\
+		-v /var/run/docker.sock:/var/run/docker.sock  \
+		-v $(PWD)/$(DIVE_CI_CONF):/opt/.dive-ci.yaml \
+		wagoodman/dive:latest ${DOCKER_IMAGE_REPO}/${DOCKER_IMAGE}:${DOCKER_TAG} --ci --ci-config /opt/.dive-ci.yaml
