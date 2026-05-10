@@ -1,10 +1,14 @@
 # Define your default OPERATOR_PATH if not set
 OPERATOR_PATH ?= "."
 
+# Default branch used for release/tag detection and commitlint base.
+# Override to "main" (or any other ref) in the consumer Makefile when needed.
+DEFAULT_BRANCH ?= master
+
 # Repo Structure and its friends
 MODULE := $(shell basename `pwd`)
 COMMIT := $(shell git log --pretty=format:'%h' -n 1)
-TAG := $(shell git for-each-ref --count=1 --format='%(refname:short)' 'refs/tags/v[0-9]*.[0-9]*.[0-9]*' --points-at master --merged)
+TAG := $(shell git for-each-ref --count=1 --format='%(refname:short)' 'refs/tags/v[0-9]*.[0-9]*.[0-9]*' --points-at $(DEFAULT_BRANCH) --merged)
 
 # Dynamically determine the branch name:
 # - Use GITHUB_HEAD_REF if it is set (indicating a PR).
@@ -26,7 +30,7 @@ CMD_PATH := cmd/${MODULE}/*.go
 BUILD_PATH := build
 DEPLOY_PATH := deploy
 
-# Get latest merged tag in master, to allow release. Else, get the branch name as version and skip tags in there
+# Get latest merged tag in $(DEFAULT_BRANCH), to allow release. Else, get the branch name as version and skip tags in there.
 VERSION ?= ""
 
 ifeq ($(VERSION),"")
