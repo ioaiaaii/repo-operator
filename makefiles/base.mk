@@ -47,8 +47,9 @@ TIMESTAMP := $(shell date '+%Y-%m-%d_%I:%M')
 # Bins
 CHART_TESTING_SHA := sha256:ef453de0be68d5ded26f3b3ea0c5431b396c8c48f89e2a07be7b19c4c9a68b31
 HELM_SHA := sha256:6b85088a38ef34bbbdf3b91ab4e18038f35220f0f1bb1a97f94b7fde50ce66ee
-UBUNTU_SHA := sha256:f0a63f53b736b9211a5313a7219f6cc012b7cf4194c7ce2248fac8162b56dceb
 
+#https://hub.docker.com/layers/library/ubuntu/26.04/images/sha256-d31acef2a964b6df1f2b7e20a1525c4f2378024e087a4f8a8a9a4247e6a79573
+UBUNTU_SHA := sha256:f3d28607ddd78734bb7f71f117f3c6706c666b8b76cbff7c9ff6e5718d46ff64
 
 CT_CONTAINER_CMD := docker run -it --network host\
 		-u $(shell id -u):$(shell id -g)\

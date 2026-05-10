@@ -1,4 +1,4 @@
-TRIVY_SHA := sha256:26245f364b6f5d223003dc344ec1eb5eb8439052bfecb31d79aeba0c74344b3a
+TRIVY_SHA := sha256:1c78ed1ef824ab8bb05b04359d186e4c1229d0b3e67005faacb54a7d71974f73
 TRIVY_CMD := docker run --rm\
 		-u $(shell id -u):$(shell id -g)\
 		-v $(PWD)/${SRC}/:/opt/${SRC}\
