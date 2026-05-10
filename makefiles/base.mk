@@ -149,3 +149,9 @@ pre-commit-hooks-list:
 .PHONY: pre-commit-hooks
 pre-commit-hooks:
 	@$(UBUNTU_CMD) bash -c "OPERATOR_PATH=$(OPERATOR_PATH) $(OPERATOR_PATH)/scripts/precommit_sync.sh"
+
+## Syncs pre-commit-hooks configuration and installs the git hook on the host
+.PHONY: pre-commit-install
+pre-commit-install: pre-commit-hooks
+	@command -v pre-commit >/dev/null 2>&1 || { echo >&2 "pre-commit not found on host. Install via: pip install pre-commit (or brew install pre-commit)"; exit 1; }
+	@pre-commit install
