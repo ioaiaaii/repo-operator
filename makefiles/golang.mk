@@ -5,8 +5,10 @@ TIMESTAMP := $(shell date '+%Y-%m-%d_%I:%M')
 LD_FLAGS = "-s -w -X $(MODULE)/pkg/version.BuildVersion=$(VERSION) -X $(MODULE)/pkg/version.BuildHash=$(COMMIT) -X $(MODULE)/pkg/version.BuildTime=$(TIMESTAMP)"
 GOBUILD_OPTS = -ldflags=${LD_FLAGS}
 GO_VERSION :=$(shell $(UBUNTU_CMD) awk '/^go / {print $$2}' $(SRC)/go.mod )
-GOLANG_CI_SHA := sha256:e47065d755ca0afeac9df866d1dabdc99f439653a43fe234e05f50d9c36b6b90
-GO_WORKSPACE_SHA := sha256:ad5c126b5cf501a8caef751a243bb717ec204ab1aa56dc41dc11be089fafcb4f
+#v2.10.1-alpine MULTI-PLATFORM
+GOLANG_CI_SHA := sha256:33bc6b6156d4c7da87175f187090019769903d04dd408833b83083ed214b0ddf
+#golang:1.26.0 MULTI-PLATFORM
+GO_WORKSPACE_SHA := sha256:sha256:c83e68f3ebb6943a2904fa66348867d108119890a2c6a2e6f07b38d0eb6c25c5
 
 GOCI_CMD := docker run --rm \
 		-v $(PWD)/${SRC}:/app \
