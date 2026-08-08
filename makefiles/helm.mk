@@ -8,8 +8,9 @@ CT_CONTAINER_CMD := docker run -it --network host\
 		-w "/opt"\
 		quay.io/helmpack/chart-testing@${CHART_TESTING_SHA}
 
-## Runs ct linting
+##@ Repo Operator: Helm
+
 .PHONY: chart-testing
-chart-testing:
+chart-testing: ## Lint charts with ct.
 	@echo "Chart testing..."
 	$(CT_CONTAINER_CMD) ct lint --config ${BUILD_PATH}/ci/.chart-testing.yaml --all

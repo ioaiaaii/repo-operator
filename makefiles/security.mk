@@ -4,9 +4,14 @@ TRIVY_CMD := docker run --rm\
 		-v $(PWD)/${SRC}/:/opt/${SRC}\
 		-w /opt/${SRC}\
 		aquasec/trivy@${TRIVY_SHA}
-TRIVY_ARGS ?= ""
+TRIVY_ARGS ?=
 
-## Trivy Security Scanner
-trivy-scan:
-	@echo "Security Scanning...\n"
+##@ Repo Operator: Security
+
+# Pass --cache-dir inside the mounted workspace: the container user has no
+# passwd entry, so trivy's default cache path is unwritable.
+#   make trivy-scan TRIVY_ARGS="fs --cache-dir build/ci/.cache/trivy ."
+.PHONY: trivy-scan
+trivy-scan: ## Scan with Trivy. Pass the subcommand via TRIVY_ARGS.
+	@echo "Security Scanning..."
 	@$(TRIVY_CMD) ${TRIVY_ARGS}

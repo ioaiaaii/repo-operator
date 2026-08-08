@@ -1,8 +1,10 @@
+OTEL_COLLECTOR_SHA := sha256:c5918f78992ee73b0d6f0e599423ac5ec52dd5d9726733114d6eca53d5a32ed5
 OTEL_CI_CONF := "build/ci/.otel-collector-config.yaml"
 
-## Runs otel-collector
+##@ Repo Operator: OpenTelemetry
+
 .PHONY: otel-ci
-otel-ci:
+otel-ci: ## Run an OpenTelemetry Collector locally.
 	@echo "Starting OpenTelemetry Collector..."
 	@docker run \
 		-v $(PWD)/$(OTEL_CI_CONF):/etc/otelcol-contrib/config.yaml \
@@ -12,4 +14,4 @@ otel-ci:
 		-p 13133:13133 \
 		-p 4317:4317 \
 		-p 4318:4318 \
-		otel/opentelemetry-collector-contrib
+		otel/opentelemetry-collector-contrib@${OTEL_COLLECTOR_SHA}
