@@ -1,3 +1,5 @@
-override OPERATOR_PATH := "."
-include makefiles/base.mk
-include makefiles/openapi.mk
+override OPERATOR_PATH := .
+
+include makefiles/all.mk
+
+.DEFAULT_GOAL := op-help
