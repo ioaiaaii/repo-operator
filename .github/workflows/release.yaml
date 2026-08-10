@@ -5,12 +5,9 @@ on:
     tags:
       - 'v*'  # Trigger on tags starting with 'v'
 
+# createRelease is the only write this workflow performs.
 permissions:
   contents: write
-  pull-requests: write
-  actions: write
-  packages: write
-  id-token: write
 
 jobs:
   release:
@@ -20,8 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0  # Fetch the entire history
-          submodules: true  # Fetch all submodules
+          fetch-depth: 0  # git-chglog reads the full history
 
       - name: Run Makefile Target and Capture Output
         id: generate_changelog
@@ -29,7 +25,7 @@ jobs:
           TAG: ${{ github.ref_name }}  # Set the tag for the Makefile
         run: |
           # Run the Makefile target with the specified TAG and capture output
-          changelog=$(make conventional-changelog-release TAG=$TAG)
+          changelog=$(make op-changelog-release TAG=$TAG)
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$changelog" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
