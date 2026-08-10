@@ -10,7 +10,7 @@ if [ ! -f "${finame_name}" ]; then
 fi
 
 # Loop through all .yaml files in the specified directory
-gifiles=("$OPERATOR_PATH"/pre-commit-hooks/*.yaml)
+gifiles=("$OPERATOR_PATH"/configs/pre-commit-hooks/*.yaml)
 
 for file in "${gifiles[@]}"; do
     # Check if the file exists and is a regular file
