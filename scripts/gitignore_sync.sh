@@ -9,7 +9,7 @@ if [ ! -f ".gitignore" ]; then
 fi
 
 # Loop through all .gitignore files in the specified directory
-gifiles=("$OPERATOR_PATH"/gitignore/*.gitignore)
+gifiles=("$OPERATOR_PATH"/configs/gitignore/*.gitignore)
 
 for file in "${gifiles[@]}"; do
     # Check if the file exists and is a regular file

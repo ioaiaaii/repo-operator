@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 110 260 296" width="260" height="296" role="img" aria-label="repo-operator">
+  <title>repo-operator</title>
+  <polygon points="170,120 230,154 170,188 110,154" fill="#7D93F7"></polygon>
+  <polygon points="110,154 170,188 170,268 110,234" fill="#4256CE"></polygon>
+  <polygon points="170,188 230,154 230,234 170,268" fill="#2E3C9B"></polygon>
+  <polygon points="230,154 290,188 230,222 170,188" fill="#5FD8A4"></polygon>
+  <polygon points="170,188 230,222 230,332 170,298" fill="#2BAE79"></polygon>
+  <polygon points="230,222 290,188 290,298 230,332" fill="#1B8058"></polygon>
+  <polygon points="290,188 350,222 290,256 230,222" fill="#7D93F7"></polygon>
+  <polygon points="230,222 290,256 290,396 230,362" fill="#4256CE"></polygon>
+  <polygon points="290,256 350,222 350,362 290,396" fill="#2E3C9B"></polygon>
+</svg>
