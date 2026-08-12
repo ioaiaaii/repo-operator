@@ -54,6 +54,16 @@ IMAGE_PLATFORMS ?=
 IMAGE_ATTEST    ?= --provenance=false
 endif
 
+##v extra --build-arg flags (default carries LD_FLAGS for Go images)
+IMAGE_BUILD_ARGS ?= --build-arg LD_FLAGS="$(LD_FLAGS)"
+
+##v extra --tag flags with full refs, e.g. --tag ghcr.io/owner/name:latest
+IMAGE_EXTRA_TAGS ?=
+
+##v --annotation flags; GHCR reads the multi-arch description from
+##v index annotations, not image labels
+IMAGE_ANNOTATIONS ?=
+
 # Records the pushed digest, which is what promote-by-digest reads.
 ##v buildx metadata file, holds the pushed digest
 IMAGE_METADATA ?= $(BUILD_PATH)/ci/$(IMAGE_NAME)-metadata.json
@@ -71,7 +81,7 @@ op-image-lint: ## Lint a Dockerfile with hadolint.
 	@docker run --rm -i -e HADOLINT_VERBOSE=1 -e HADOLINT_FORMAT=json hadolint/hadolint@$(OP_HADOLINT_SHA) < $(IMAGE_DOCKERFILE)
 
 .PHONY: op-image-build
-##p IMAGE_NAME* IMAGE_MODE IMAGE_REPO IMAGE_CONTEXT IMAGE_DOCKERFILE IMAGE_TAG LD_FLAGS
+##p IMAGE_NAME* IMAGE_MODE IMAGE_REPO IMAGE_CONTEXT IMAGE_DOCKERFILE IMAGE_TAG IMAGE_BUILD_ARGS IMAGE_EXTRA_TAGS IMAGE_ANNOTATIONS LD_FLAGS
 op-image-build: ## Build an image, or publish it with IMAGE_MODE=publish.
 	$(call require,IMAGE_NAME)
 	@echo "Building $(IMAGE_REF)..."
@@ -79,7 +89,9 @@ op-image-build: ## Build an image, or publish it with IMAGE_MODE=publish.
 	@docker buildx build \
 		$(if $(strip $(IMAGE_PLATFORMS)),--platform $(IMAGE_PLATFORMS)) \
 		--tag $(IMAGE_REF) \
-		--build-arg LD_FLAGS="$(LD_FLAGS)" \
+		$(IMAGE_EXTRA_TAGS) \
+		$(IMAGE_ANNOTATIONS) \
+		$(IMAGE_BUILD_ARGS) \
 		--build-arg REVISION="$(OP_COMMIT)" \
 		$(IMAGE_ATTEST) \
 		--metadata-file $(IMAGE_METADATA) \

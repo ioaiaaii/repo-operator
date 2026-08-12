@@ -20,7 +20,7 @@ OP_HELM_CMD := docker run --rm \
 		alpine/helm@$(OP_HELM_SHA)
 endif
 
-OP_CT_CMD := docker run -it --network host \
+OP_CT_CMD := docker run --rm --network host \
 		-u $(shell id -u):$(shell id -g) \
 		-v $(PWD)/$(BUILD_PATH)/:/opt/$(BUILD_PATH) \
 		-v $(PWD)/$(DEPLOY_PATH)/:/opt/$(DEPLOY_PATH) \

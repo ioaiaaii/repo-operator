@@ -13,7 +13,7 @@ ifneq ($(strip $(VERSION_PKG)),)
 LD_FLAGS += -X $(VERSION_PKG).BuildVersion=$(VERSION) -X $(VERSION_PKG).BuildHash=$(OP_COMMIT) -X $(VERSION_PKG).BuildTime=$(OP_TIMESTAMP)
 endif
 
-OP_GOBUILD_OPTS = -ldflags="$(LD_FLAGS)"
+OP_GOBUILD_OPTS = -trimpath -ldflags="$(LD_FLAGS)"
 
 # Lazy: reading go.mod spawns a container, so only pay for it on use.
 OP_GO_VERSION = $(shell $(OP_UBUNTU_CMD) awk '/^go / {print $$2}' $(SRC)/go.mod)
@@ -61,7 +61,14 @@ op-go-test: ## Run unit tests.
 	@echo "Unit Testing..."
 	@$(OP_GO_CMD) go test ./...
 
+##v target OS for op-go-build
+GOOS        ?= linux
+##v target architecture for op-go-build
+GOARCH      ?= amd64
+##v output path for the binary, resolved from the repo root
+BINARY_PATH ?= $(BUILD_PATH)/$(OP_MODULE)
+
 .PHONY: op-go-build
-##p SRC CMD_PATH LD_FLAGS VERSION_PKG BUILD_PATH
-op-go-build: ## Build a static linux/amd64 binary.
-	cd $(SRC) && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -mod=readonly $(OP_GOBUILD_OPTS) -o ../$(BUILD_PATH)/$(OP_MODULE) $(CMD_PATH)
+##p SRC CMD_PATH LD_FLAGS VERSION_PKG GOOS GOARCH BINARY_PATH
+op-go-build: ## Build a static binary for GOOS and GOARCH.
+	cd $(SRC) && CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -a -mod=readonly $(OP_GOBUILD_OPTS) -o $(abspath $(BINARY_PATH)) $(CMD_PATH)
