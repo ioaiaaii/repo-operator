@@ -2,16 +2,22 @@
 
 ##v entrypoint glob for op-go-build
 CMD_PATH    ?= cmd/$(OP_MODULE)/*.go
-##v Go import path to stamp Build* variables into (empty: no -X flags)
+##v import path of a consumer package defining BuildVersion, BuildHash
+##v and BuildTime string variables; consumers set it in their own
+##v makefiles to enable stamping, empty skips the -X flags
 VERSION_PKG ?=
 
 # Stripping applies everywhere. `go build` ignores -X for a symbol that does
 # not exist, so a wrong or unset VERSION_PKG fails silently rather than loudly.
+# $(if) rather than ifneq: consumers set VERSION_PKG in files included
+# after this one, and only $(if) evaluates late enough to see it.
+OP_VERSION_FLAGS = $(if $(strip $(VERSION_PKG)),\
+	-X $(VERSION_PKG).BuildVersion=$(VERSION) \
+	-X $(VERSION_PKG).BuildHash=$(OP_COMMIT) \
+	-X $(VERSION_PKG).BuildTime=$(OP_TIMESTAMP))
+
 ##v linker flags passed to go build and op-image-build
-LD_FLAGS = -s -w
-ifneq ($(strip $(VERSION_PKG)),)
-LD_FLAGS += -X $(VERSION_PKG).BuildVersion=$(VERSION) -X $(VERSION_PKG).BuildHash=$(OP_COMMIT) -X $(VERSION_PKG).BuildTime=$(OP_TIMESTAMP)
-endif
+LD_FLAGS = -s -w $(OP_VERSION_FLAGS)
 
 OP_GOBUILD_OPTS = -trimpath -ldflags="$(LD_FLAGS)"
 
